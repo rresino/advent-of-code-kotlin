@@ -1,17 +1,21 @@
 fun main() {
-    fun part1(input: List<String>): Int {
-        return input.size
+
+    // val rawInput = readInput("Day01.test")
+    val rawInput = readInput("Day01")
+    val input = rawInput.filter { it.isNotBlank() }.map { it.trim().toInt() }
+    val initValue = Pair(Integer.MAX_VALUE, 0)
+
+    fun calculate(acc: Pair<Int, Int>, next: Int): Pair<Int, Int> {
+        // println("acc=>$acc - $next")
+        if (acc.first < next) {
+            return Pair(next, acc.second + 1)
+        }
+        return acc.copy(first = next)
     }
 
-    fun part2(input: List<String>): Int {
-        return input.size
-    }
+    val result = input.fold(initValue) { acc, next -> calculate(acc, next) }
 
-    // test if implementation meets criteria from the description, like:
-    val testInput = readInput("Day01_test")
-    check(part1(testInput) == 1)
+    println("How many measurements are larger than the previous measurement?")
+    println(result.second)
 
-    val input = readInput("Day01")
-    println(part1(input))
-    println(part2(input))
 }
