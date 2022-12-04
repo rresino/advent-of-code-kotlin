@@ -3,6 +3,8 @@ package rresino.advent.code.year2022
 import rresino.advent.code.year2022.Day02.Game.*
 import rresino.advent.code.year2022.Day02.Result.*
 
+// Day 2: Rock Paper Scissors
+// https://adventofcode.com/2022/day/2
 object Day02 {
 
     enum class Result(val score: Int) {
