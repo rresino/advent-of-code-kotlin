@@ -10,5 +10,7 @@ object Utils {
             .map { it.trim() }
             .filter { !cleanUp || it.isNotBlank() }
 
-
+    fun readRawInput(name: String): List<String> =
+        File("year_2022/src/main/resources", "$name.txt")
+            .readLines()
 }
