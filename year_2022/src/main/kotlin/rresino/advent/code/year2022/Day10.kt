@@ -82,10 +82,10 @@ fun main() {
     val dataDemo = Utils.readRawInput("day10.demo")
     val dataStep = Utils.readRawInput("day10")
 
-/*    println("Step 1 - Demo data")
+    println("Step 1 - Demo data")
     Day10.solution1(dataDemo)
     println("Step 1 - step data")
-    Day10.solution1(dataStep)*/
+    Day10.solution1(dataStep)
     println()
     println("Step 2 - Demo data")
     Day10.solution2(dataDemo)
