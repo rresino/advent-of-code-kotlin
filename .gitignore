@@ -3,3 +3,4 @@
 build
 src/**/*.txt
 /year_2022/src/main/resources/*.txt
+/year_2023/src/main/resources/*.txt
