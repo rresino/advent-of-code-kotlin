@@ -1,10 +1,26 @@
 package rresino.adventure.code.year2023
 
+import kotlin.math.max
+
 object Day02 {
 
     data class GameRules(val maxRed: Int, val maxGreen: Int, val maxBlue: Int)
 
     data class Game(val id: Int, val gameSets: List<GameSet> = listOf()) {
+
+        fun getMaxValues(): GameSet =
+            gameSets.fold(GameSet()){ acc, gameSet ->
+                GameSet(
+                    red = max(acc.red, gameSet.red),
+                    green = max(acc.green, gameSet.green),
+                    blue = max(acc.blue, gameSet.blue)
+                )
+            }
+
+        fun getPower(): Int {
+            val maxValues = getMaxValues()
+            return maxValues.red * maxValues.green * maxValues.blue
+        }
 
         fun validate(rules: GameRules): Boolean =
             gameSets.all { it.validate(rules) }
@@ -44,15 +60,6 @@ object Day02 {
 
     }
 
-    fun runStep1(useDemo: Boolean): Int {
-        val lines = Utils.readCleanInput(if (useDemo) "day02.demo" else "day02")
-        val games = parseLines(lines)
-
-        val rules = GameRules(maxRed = 12, maxGreen = 13, maxBlue = 14)
-
-        return games.filter { it.validate(rules) }.sumOf { it.id }
-    }
-
     private fun parseLines(lines: List<String>): List<Game> {
 
         val games = lines.map { line ->
@@ -63,9 +70,20 @@ object Day02 {
         return games
     }
 
+    fun runStep1(useDemo: Boolean): Int {
+        val lines = Utils.readCleanInput(if (useDemo) "day02.demo" else "day02")
+        val games = parseLines(lines)
+
+        val rules = GameRules(maxRed = 12, maxGreen = 13, maxBlue = 14)
+
+        return games.filter { it.validate(rules) }.sumOf { it.id }
+    }
+
     fun runStep2(useDemo: Boolean): Int {
-        val lines = Utils.readCleanInput(if (useDemo) "day02.demo2" else "day02")
-        return 0
+        val lines = Utils.readCleanInput(if (useDemo) "day02.demo" else "day02")
+        val games = parseLines(lines)
+
+        return games.sumOf { it.getPower() }
     }
 
     @JvmStatic
@@ -75,9 +93,9 @@ object Day02 {
         println("Day 02 - Demo ${runStep1(true)}")
         println("Day 02 - ${runStep1(false)}")
         println()
-//        println("Step 2")
-//        println("Day 02 - Demo ${runStep2(true)}")
-//        println("Day 02 - ${runStep2(false)}")
+        println("Step 2")
+        println("Day 02 - Demo ${runStep2(true)}")
+        println("Day 02 - ${runStep2(false)}")
         println()
     }
 
