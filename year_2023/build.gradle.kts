@@ -1,15 +1,20 @@
 plugins {
-    kotlin("jvm") version "1.7.20"
+    kotlin("jvm") version "1.9.20"
 }
 
 repositories {
     mavenCentral()
 }
 
-tasks {
-    sourceSets {
-        main {
-            java.srcDirs("src/main/kotlin")
-        }
-    }
+dependencies {
+    testImplementation(kotlin("test"))
+    testImplementation("io.strikt:strikt-core:0.34.0")
+}
+
+tasks.test {
+    useJUnitPlatform()
+}
+
+kotlin {
+    jvmToolchain(17)
 }
