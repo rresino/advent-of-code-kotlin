@@ -5,8 +5,11 @@ import rresino.adventure.code.year2023.Day03
 import rresino.adventure.code.year2023.Day03.EngineSchematic
 import strikt.api.*
 import strikt.assertions.*
+import java.io.File
 
 class EngineSchematicTest {
+
+    private val day03Lines = File("src/main/resources", "day03.txt").readLines()
 
     @Test
     fun `load a string from file and parse it to line for all engine schematic`() {
@@ -64,11 +67,11 @@ class EngineSchematicTest {
         val data = listOf("4")
         val engineSchematic = EngineSchematic.parseInputFileToData(data)
 
-        expectThat(engineSchematic.IsSymbol(-2, 0)).isFalse()
-        expectThat(engineSchematic.IsSymbol(-1, 0)).isFalse()
-        expectThat(engineSchematic.IsSymbol(0, -2)).isFalse()
-        expectThat(engineSchematic.IsSymbol(0, -1)).isFalse()
-        expectThat(engineSchematic.IsSymbol(-1, -1)).isFalse()
+        expectThat(engineSchematic.isSymbol(-2, 0)).isFalse()
+        expectThat(engineSchematic.isSymbol(-1, 0)).isFalse()
+        expectThat(engineSchematic.isSymbol(0, -2)).isFalse()
+        expectThat(engineSchematic.isSymbol(0, -1)).isFalse()
+        expectThat(engineSchematic.isSymbol(-1, -1)).isFalse()
 
     }
 
@@ -77,9 +80,9 @@ class EngineSchematicTest {
         val data = listOf(".*.")
         val engineSchematic = EngineSchematic.parseInputFileToData(data)
 
-        expectThat(engineSchematic.IsSymbol(0, 0)).isFalse()
-        expectThat(engineSchematic.IsSymbol(0, 1)).isTrue()
-        expectThat(engineSchematic.IsSymbol(0, 2)).isFalse()
+        expectThat(engineSchematic.isSymbol(0, 0)).isFalse()
+        expectThat(engineSchematic.isSymbol(0, 1)).isTrue()
+        expectThat(engineSchematic.isSymbol(0, 2)).isFalse()
     }
 
     @Test
@@ -145,5 +148,102 @@ class EngineSchematicTest {
         expectThat(rs).isTrue()
     }
 
+    @Test
+    fun `get all the engines from long data file`() {
+        val data = listOf(
+            "311...672...34...391.....591......828.......................738....................223....803..472..................................714.840.",
+            ".......*...........*.....*...........*........631%...703.......*..12....652.................*.$............368.769*148.................*....",
+            "....411...........2....837.121........511.745...........*.48.422.@.........@.............311........887......*................457........595",
+            )
+
+        val engineSchematic = EngineSchematic.parseInputFileToData(data)
+        val asterixPos = engineSchematic.getIndexesOfAsterix()
+
+        val rs: List<List<Int>> =
+            asterixPos.map { pos -> engineSchematic.getNearNumbers(pos)}
+                .filter { it.size > 1 }
+
+        expect {
+            that(asterixPos.size).isEqualTo(10)
+            that(rs.size).isEqualTo(8)
+            that(rs).isEqualTo(
+                listOf(
+                    listOf(672,411),
+                    listOf(391,2),
+                    listOf(591,837),
+                    listOf(828,511),
+                    listOf(738,422),
+                    listOf(803,311),
+                    listOf(769,148),
+                    listOf(714,840),
+                )
+            )
+        }
+    }
+
+    @Test
+    fun `get all the asterix postions`() {
+        val engineSchematic = EngineSchematic.parseInputFileToData(day03Lines)
+        val rs = engineSchematic.getIndexesOfAsterix()
+
+        expectThat(rs.size).isEqualTo(371)
+    }
+
+    @Test
+    fun `get numbers near given asterix position`() {
+        val engineSchematic = EngineSchematic.parseInputFileToData(day03Lines)
+        val position = Pair(1,7)
+        val rs = engineSchematic.getNearNumbers(position)
+
+        expectThat(rs).isEqualTo(listOf(672,411))
+    }
+
+    @Test
+    fun `get number from index`() {
+        val lines = listOf("311...672...34...391.....591......828......")
+        val engineSchematic = EngineSchematic.parseInputFileToData(lines)
+
+        val rs1 = engineSchematic.getNumberFromIndex(0,6)
+        val rs2 = engineSchematic.getNumberFromIndex(0,7)
+        val rs3 = engineSchematic.getNumberFromIndex(0,8)
+
+        expectThat(rs1).isEqualTo(672)
+        expectThat(rs2).isEqualTo(672)
+        expectThat(rs3).isEqualTo(672)
+    }
+
+    @Test
+    fun `get number from index in beginning`() {
+        val lines = listOf("311...672...34...391.....591......828......")
+        val engineSchematic = EngineSchematic.parseInputFileToData(lines)
+
+        val rs1 = engineSchematic.getNumberFromIndex(0,0)
+        val rs2 = engineSchematic.getNumberFromIndex(0,1)
+        val rs3 = engineSchematic.getNumberFromIndex(0,2)
+
+        expectThat(rs1).isEqualTo(311)
+        expectThat(rs2).isEqualTo(311)
+        expectThat(rs3).isEqualTo(311)
+    }
+
+    @Test
+    fun `get number from index in end`() {
+        val lines = listOf("..6")
+        val engineSchematic = EngineSchematic.parseInputFileToData(lines)
+
+        val rs = engineSchematic.getNumberFromIndex(0,2)
+
+        expectThat(rs).isEqualTo(6)
+    }
+
+    @Test
+    fun `get number -1 from index with non number`() {
+        val lines = listOf("...................")
+        val engineSchematic = EngineSchematic.parseInputFileToData(lines)
+
+        val rs = engineSchematic.getNumberFromIndex(0,4)
+
+        expectThat(rs).isEqualTo(-1)
+    }
 
 }
